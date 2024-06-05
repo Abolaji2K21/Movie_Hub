@@ -7,4 +7,7 @@ import lombok.Data;
 public class UpdateMediaRequest {
     private Long id;
     private String description;
-    private Category category;}
+    private Category category;
+
+
+}

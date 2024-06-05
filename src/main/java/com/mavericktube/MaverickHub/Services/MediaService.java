@@ -1,5 +1,7 @@
 package com.mavericktube.MaverickHub.Services;
 
+import com.github.fge.jsonpatch.JsonPatch;
+import com.github.fge.jsonpatch.JsonPatchException;
 import com.mavericktube.MaverickHub.Models.Media;
 import com.mavericktube.MaverickHub.Models.User;
 import com.mavericktube.MaverickHub.dtos.requests.UpdateMediaRequest;
@@ -16,6 +18,8 @@ public interface MediaService {
 
 
     UpdateMediaResponse update (UpdateMediaRequest request) throws IOException;
+    UpdateMediaResponse updateOne (Long mediaId, JsonPatch UpdateMediaRequest ) throws IOException, JsonPatchException;
+
 
     Media getById(Long userId);
 

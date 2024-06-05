@@ -1,12 +1,20 @@
 package com.mavericktube.MaverickHub.Services;
 
 
+import com.fasterxml.jackson.databind.node.TextNode;
+import com.github.fge.jackson.jsonpointer.JsonPointer;
+import com.github.fge.jackson.jsonpointer.JsonPointerException;
+import com.github.fge.jsonpatch.JsonPatch;
+import com.github.fge.jsonpatch.JsonPatchException;
+import com.github.fge.jsonpatch.JsonPatchOperation;
+import com.github.fge.jsonpatch.ReplaceOperation;
 import com.mavericktube.MaverickHub.Models.Category;
 import com.mavericktube.MaverickHub.Models.Media;
 import com.mavericktube.MaverickHub.dtos.requests.UpdateMediaRequest;
 import com.mavericktube.MaverickHub.dtos.requests.UploadMediaRequest;
 import com.mavericktube.MaverickHub.dtos.responds.UpdateMediaResponse;
 import com.mavericktube.MaverickHub.dtos.responds.UploadMediaResponse;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.DisplayName;
@@ -22,12 +30,12 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
-import static com.mavericktube.MaverickHub.Models.Category.HORROR;
+import static com.mavericktube.MaverickHub.Models.Category.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static utils.TestUtil.Test_Image_Location;
-import static utils.TestUtil.Test_Video_Location;
+import static utils.TestUtil.*;
 
 @SpringBootTest
 @Slf4j
@@ -74,7 +82,7 @@ public class MediaServiceTest {
 
     @Test
     @Sql(scripts = {"/db/data.sql"})
-    public void uploadImageTest() throws IOException {
+    public void updateImageTest() throws IOException {
         UpdateMediaRequest request = new UpdateMediaRequest();
         request.setId(100L);
         request.setCategory(HORROR);
@@ -86,14 +94,25 @@ public class MediaServiceTest {
         assertEquals("Sweet terror", media.getDescription());
 }
 
+    @Test
+    @DisplayName("Test that media can be retrieved")
+    @Sql(scripts = {"/db/data.sql"})
+    public void updateMediaTest() throws IOException, JsonPointerException, JsonPatchException {
+        Category category = mediaService.getById(100L).getCategory();
+        assertThat(category).isEqualTo(DRAMA);
 
+        List<JsonPatchOperation> operations = List.of(
+                new ReplaceOperation(new JsonPointer("/category"),new TextNode(ROMANCE.name()))
+        );
+        JsonPatch updateMediaRequest = new JsonPatch(operations);
+        UpdateMediaResponse response = mediaService.updateOne(100L, updateMediaRequest);
+        System.out.println(response);
+        assertThat(response).isNotNull();
+        assertThat(category).isNotNull();
+        category = mediaService.getById(100L).getCategory();
 
-    private static UploadMediaRequest buildUploadRequest(InputStream inputStream) throws IOException {
-        UploadMediaRequest request = new UploadMediaRequest();
-        MultipartFile file = new MockMultipartFile("Funny Ved",inputStream );
-        request.setMediaFile(file);
-        request.setCategory(Category.ACTION);
-        request.setUserId(201L);
-        return request;
+        assertThat(category).isEqualTo(ROMANCE);
+
     }
+
 }

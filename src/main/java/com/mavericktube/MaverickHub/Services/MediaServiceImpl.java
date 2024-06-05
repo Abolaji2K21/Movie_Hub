@@ -2,6 +2,10 @@ package com.mavericktube.MaverickHub.Services;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.fge.jsonpatch.JsonPatch;
+import com.github.fge.jsonpatch.JsonPatchException;
 import com.mavericktube.MaverickHub.Models.Media;
 import com.mavericktube.MaverickHub.Models.User;
 import com.mavericktube.MaverickHub.Repositories.MediaRespository;
@@ -83,6 +87,19 @@ public class MediaServiceImpl implements MediaService{
         Media updatedMedia = mediaRespository.save(existingMedia);
         return modelMapper.map(updatedMedia, UpdateMediaResponse.class);
     }
+
+    @Override
+    public UpdateMediaResponse updateOne(Long mediaId, JsonPatch UpdateMediaRequest) throws IOException, JsonPatchException {
+
+        Media media = getById(mediaId);
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode mediaNode =  objectMapper.convertValue(media, JsonNode.class);
+        mediaNode = UpdateMediaRequest.apply(mediaNode);
+        media = objectMapper.convertValue(mediaNode, Media.class);
+        media = mediaRespository.save(media);
+        return modelMapper.map(media,UpdateMediaResponse.class);
+    }
+
 
 
     @Override
