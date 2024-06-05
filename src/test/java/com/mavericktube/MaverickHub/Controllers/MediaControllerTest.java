@@ -23,8 +23,7 @@ import java.util.Arrays;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static utils.TestUtil.Test_Video_Location;
@@ -54,6 +53,18 @@ class MediaControllerTest {
                     .andDo(print());
         } catch (Exception exception) {
             throw  exception;
+}
+}
+
+    @Test
+    public void testGetMediaUser(){
+        try{
+            mockMvc.perform(get("/api/v1/media?userId=200")
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().is2xxSuccessful())
+                    .andDo(print());
+        } catch (Exception exception) {
+            assertThat(exception).isNull();
 }
 }
 

@@ -8,9 +8,10 @@ import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.mavericktube.MaverickHub.Models.Media;
 import com.mavericktube.MaverickHub.Models.User;
-import com.mavericktube.MaverickHub.Repositories.MediaRespository;
+import com.mavericktube.MaverickHub.Repositories.MediaRepository;
 import com.mavericktube.MaverickHub.dtos.requests.UpdateMediaRequest;
 import com.mavericktube.MaverickHub.dtos.requests.UploadMediaRequest;
+import com.mavericktube.MaverickHub.dtos.responds.MediaResponse;
 import com.mavericktube.MaverickHub.dtos.responds.UpdateMediaResponse;
 import com.mavericktube.MaverickHub.dtos.responds.UploadMediaResponse;
 import lombok.AllArgsConstructor;
@@ -19,6 +20,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -27,7 +29,7 @@ import java.util.Map;
 public class MediaServiceImpl implements MediaService{
 
 
-    private final MediaRespository mediaRespository;
+    private final MediaRepository mediaRepository;
     private final Cloudinary cloudinary;
     private final ModelMapper modelMapper;
     private final UserService userService;
@@ -50,7 +52,7 @@ public class MediaServiceImpl implements MediaService{
         Media media = modelMapper.map(request,Media.class);
         media.setUrl(Url);
         media.setUploader(user);
-        media = mediaRespository.save(media);
+        media = mediaRepository.save(media);
 
        return modelMapper.map(media, UploadMediaResponse.class);
 
@@ -71,7 +73,7 @@ public class MediaServiceImpl implements MediaService{
             String url = response.get("url").toString();
             Media media = modelMapper.map(request, Media.class);
             media.setUrl(url);
-            media = mediaRespository.save(media);
+            media = mediaRepository.save(media);
             return modelMapper.map(media, UploadMediaResponse.class);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -84,7 +86,7 @@ public class MediaServiceImpl implements MediaService{
         existingMedia.setDescription(request.getDescription());
         existingMedia.setCategory(request.getCategory());
 
-        Media updatedMedia = mediaRespository.save(existingMedia);
+        Media updatedMedia = mediaRepository.save(existingMedia);
         return modelMapper.map(updatedMedia, UpdateMediaResponse.class);
     }
 
@@ -96,7 +98,7 @@ public class MediaServiceImpl implements MediaService{
         JsonNode mediaNode =  objectMapper.convertValue(media, JsonNode.class);
         mediaNode = UpdateMediaRequest.apply(mediaNode);
         media = objectMapper.convertValue(mediaNode, Media.class);
-        media = mediaRespository.save(media);
+        media = mediaRepository.save(media);
         return modelMapper.map(media,UpdateMediaResponse.class);
     }
 
@@ -104,6 +106,13 @@ public class MediaServiceImpl implements MediaService{
 
     @Override
     public Media getById(Long id) {
-        return mediaRespository.findById(id).orElseThrow();
+        return mediaRepository.findById(id).orElseThrow();
+    }
+
+    @Override
+    public List<MediaResponse> getMediaFor(Long userId) {
+
+       List<Media> media = mediaRepository.findAllMediaFor(userId);
+        return media.stream().map(m-> modelMapper.map(m,MediaResponse.class)).toList();
     }
 }

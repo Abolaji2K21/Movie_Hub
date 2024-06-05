@@ -11,7 +11,7 @@ public class UploadMediaResponse {
     @JsonProperty("media_Url")
     private String Url;
     @JsonProperty("media_description")
-    private String descriptions;
+    private String description;
     private Long id;
     private Category category;
 

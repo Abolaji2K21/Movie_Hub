@@ -12,6 +12,7 @@ import com.mavericktube.MaverickHub.Models.Category;
 import com.mavericktube.MaverickHub.Models.Media;
 import com.mavericktube.MaverickHub.dtos.requests.UpdateMediaRequest;
 import com.mavericktube.MaverickHub.dtos.requests.UploadMediaRequest;
+import com.mavericktube.MaverickHub.dtos.responds.MediaResponse;
 import com.mavericktube.MaverickHub.dtos.responds.UpdateMediaResponse;
 import com.mavericktube.MaverickHub.dtos.responds.UploadMediaResponse;
 import lombok.Data;
@@ -110,9 +111,17 @@ public class MediaServiceTest {
         assertThat(response).isNotNull();
         assertThat(category).isNotNull();
         category = mediaService.getById(100L).getCategory();
-
         assertThat(category).isEqualTo(ROMANCE);
 
     }
+
+    @Test
+    @Sql(scripts = {"/db/data.sql"})
+    public void getMediaForUserTest(){
+        Long userId = 200L;
+        List<MediaResponse>  media = mediaService.getMediaFor(userId);
+        assertThat(media).hasSize(3);
+    }
+
 
 }

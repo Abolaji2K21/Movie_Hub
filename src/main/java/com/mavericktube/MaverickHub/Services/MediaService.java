@@ -6,10 +6,12 @@ import com.mavericktube.MaverickHub.Models.Media;
 import com.mavericktube.MaverickHub.Models.User;
 import com.mavericktube.MaverickHub.dtos.requests.UpdateMediaRequest;
 import com.mavericktube.MaverickHub.dtos.requests.UploadMediaRequest;
+import com.mavericktube.MaverickHub.dtos.responds.MediaResponse;
 import com.mavericktube.MaverickHub.dtos.responds.UpdateMediaResponse;
 import com.mavericktube.MaverickHub.dtos.responds.UploadMediaResponse;
 
 import java.io.IOException;
+import java.util.List;
 
 public interface MediaService {
 
@@ -23,6 +25,5 @@ public interface MediaService {
 
     Media getById(Long userId);
 
-
-
+    List<MediaResponse> getMediaFor(Long userId);
 }
