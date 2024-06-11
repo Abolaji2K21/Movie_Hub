@@ -9,21 +9,18 @@ import com.mavericktube.MaverickHub.dtos.requests.UploadMediaRequest;
 import com.mavericktube.MaverickHub.dtos.responds.MediaResponse;
 import com.mavericktube.MaverickHub.dtos.responds.UpdateMediaResponse;
 import com.mavericktube.MaverickHub.dtos.responds.UploadMediaResponse;
+import com.mavericktube.MaverickHub.exceptions.UserNotFoundException;
 
 import java.io.IOException;
 import java.util.List;
 
 public interface MediaService {
 
-    UploadMediaResponse upload (UploadMediaRequest request) throws IOException;
-    UploadMediaResponse uploadVed (UploadMediaRequest request) throws IOException;
+    UploadMediaResponse upload(UploadMediaRequest request);
 
+    Media getMediaBy(Long id);
 
-    UpdateMediaResponse update (UpdateMediaRequest request) throws IOException;
-    UpdateMediaResponse updateOne (Long mediaId, JsonPatch UpdateMediaRequest ) throws IOException, JsonPatchException;
+    UpdateMediaResponse updateMedia(Long mediaId, JsonPatch updateMediaRequest);
 
-
-    Media getById(Long userId);
-
-    List<MediaResponse> getMediaFor(Long userId);
+    List<MediaResponse> getMediaFor(Long userId) throws UserNotFoundException;
 }

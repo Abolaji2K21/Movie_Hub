@@ -13,6 +13,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.mock.web.MockPart;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
@@ -65,8 +66,17 @@ class MediaControllerTest {
                     .andDo(print());
         } catch (Exception exception) {
             assertThat(exception).isNull();
-}
+    }
 }
 
 
+    @Test
+    public void testGetMediaForUserShouldFailForInvalidUserId() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/media?userId=20000")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+
+
+    }
 }

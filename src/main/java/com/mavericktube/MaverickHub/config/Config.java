@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Configuration;
 public class Config {
 
 
-
     @Value("${cloud.api.name}")
     private String cloudName;
     @Value("${cloud.api.key}")

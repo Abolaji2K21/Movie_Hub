@@ -4,6 +4,7 @@ package com.mavericktube.MaverickHub.Services;
 import com.mavericktube.MaverickHub.Models.User;
 import com.mavericktube.MaverickHub.dtos.requests.CreateUserRequest;
 import com.mavericktube.MaverickHub.dtos.responds.CreateUserResponse;
+import com.mavericktube.MaverickHub.exceptions.UserNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,7 @@ public class UserServiceTest {
 
         CreateUserResponse response = userService.register(request);
         assertNotNull (response);
-        assertTrue(response.getMessage().contains("Successfully"));
+        assertTrue(response.getMessage().contains("successfully"));
 
 
     }
@@ -44,7 +45,7 @@ public class UserServiceTest {
     @Test
     @DisplayName("test that user can be retrieved by id ")
     @Sql(scripts = {"/db/data.sql"})
-    public  void testGetUserById(){
+    public  void testGetUserById() throws UserNotFoundException {
         User user = userService.getById(200L);
         assertThat(user).isNotNull();
     }

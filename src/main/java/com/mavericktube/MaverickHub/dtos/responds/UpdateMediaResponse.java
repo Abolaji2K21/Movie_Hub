@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mavericktube.MaverickHub.Models.Category;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 
 @Data
 public class UpdateMediaResponse {
@@ -13,4 +15,8 @@ public class UpdateMediaResponse {
     private String description;
     private Long id;
     private Category category;
+    @JsonProperty("created_at")
+    private LocalDateTime timeCreated;
+    @JsonProperty("updated_at")
+    private LocalDateTime timeUpdated;
 }
