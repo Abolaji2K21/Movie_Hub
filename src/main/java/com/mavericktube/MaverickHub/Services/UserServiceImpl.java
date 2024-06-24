@@ -8,13 +8,16 @@ import com.mavericktube.MaverickHub.exceptions.UserNotFoundException;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
 
@@ -40,5 +43,17 @@ public class UserServiceImpl implements UserService{
         return userRepository.findById(id)
                 .orElseThrow(()-> new UserNotFoundException(
                         String.format("user with id %d not found", id)));
+    }
+
+    @Override
+    public User getUserByUsername(String username) throws UserNotFoundException {
+
+        User user = userRepository.findByEmail(username).orElseThrow(()-> new UserNotFoundException("User not found"));
+        return user;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return null;
     }
 }
