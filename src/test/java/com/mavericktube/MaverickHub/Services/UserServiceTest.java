@@ -28,12 +28,8 @@ public class UserServiceTest {
     @Test
     public void registerTest(){
         CreateUserRequest request = new CreateUserRequest();
-
         request.setEmail("test@email.com");
         request.setPassword("password");
-
-
-
         CreateUserResponse response = userService.register(request);
         assertNotNull (response);
         assertTrue(response.getMessage().contains("successfully"));

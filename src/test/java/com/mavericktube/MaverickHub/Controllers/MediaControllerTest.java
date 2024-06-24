@@ -35,8 +35,6 @@ import static utils.TestUtil.buildUploadRequest;
 @Sql(scripts ={"/db/data.sql"})
 class MediaControllerTest {
 
-
-
     @Autowired
     private MockMvc mockMvc;
 
