@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Collection;
@@ -70,7 +71,7 @@ public class CustomUsernamePasswordAuthenticationFilter
                String Token =  JWT.create()
                     .withIssuer("mavericks_hub")
                     .withArrayClaim("roles",getClaimsFrom(authResult.getAuthorities()))
-                    .withExpiresAt(new Date(LocalDate.now().plusDays(3).toEpochDay()))
+                    .withExpiresAt(Instant.now().plusSeconds(24 * 60 * 60))
                     .sign(Algorithm.HMAC512("secret"));
 
 //        } catch (JWTCreationException exception){
