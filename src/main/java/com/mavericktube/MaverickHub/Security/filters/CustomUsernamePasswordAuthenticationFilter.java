@@ -8,9 +8,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Component;
 
@@ -29,19 +31,25 @@ public class CustomUsernamePasswordAuthenticationFilter
 
         ObjectMapper mapper = new ObjectMapper();
         try {
+            //1. retrieve authentication credentials for the request body
             InputStream requestBodyStream = request.getInputStream();
+            //2. Convert the json data from 1 to java object (LoginRequst)
             LoginRequest  loginRequest =mapper.readValue(requestBodyStream, LoginRequest.class);
 
 
             String username = loginRequest.getUsername();
             String password = loginRequest.getPassword();
-
+                //3. create an authentication object that is to be authenticated
             Authentication authentication = new UsernamePasswordAuthenticationToken(username,password);
+            //4. Pass the unauthenticated authentication object to the authenticationManager
+            //4b. get back the authentication result from the authenticationManager
             Authentication authenticationResult = authenticationManager.authenticate(authentication);
+            //5. put the authenticationResult in the security context
+            SecurityContextHolder.getContext().setAuthentication(authenticationResult);
+            return authenticationResult;
         } catch  (IOException e) {
-            throw new RuntimeException(e);
+            throw new BadCredentialsException(e.getMessage());
         }
-            return null;
     }
 
     @Override
