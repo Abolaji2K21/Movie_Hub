@@ -25,8 +25,9 @@ import java.io.InputStream;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Collection;
-import java.util.Date;
+import java.util.*;
+
+import static com.cloudinary.AccessControlRule.AccessType.token;
 
 @Component
 @AllArgsConstructor
@@ -34,11 +35,12 @@ public class CustomUsernamePasswordAuthenticationFilter
         extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
+    private ObjectMapper mapper = new ObjectMapper();
+
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request,
                                                 HttpServletResponse response) throws AuthenticationException {
 
-        ObjectMapper mapper = new ObjectMapper();
         try {
             //1. retrieve authentication credentials for the request body
             InputStream requestBodyStream = request.getInputStream();
@@ -68,11 +70,16 @@ public class CustomUsernamePasswordAuthenticationFilter
                                             Authentication authResult) throws IOException, ServletException {
 //        try {
 //            Algorithm algorithm = Algorithm.RSA256(rsaPublicKey, rsaPrivateKey);
-               String Token =  JWT.create()
+               String token =  JWT.create()
                     .withIssuer("mavericks_hub")
                     .withArrayClaim("roles",getClaimsFrom(authResult.getAuthorities()))
                     .withExpiresAt(Instant.now().plusSeconds(24 * 60 * 60))
                     .sign(Algorithm.HMAC512("secret"));
+
+               Map<String, String> res = new HashMap<>();
+               res.put("access_token", token);
+               response.getOutputStream().write(mapper.writeValueAsBytes(res));
+               response.flushBuffer();
 
 //        } catch (JWTCreationException exception){
             // Invalid Signing configuration / Couldn't convert Claims.
