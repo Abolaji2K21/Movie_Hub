@@ -80,6 +80,7 @@ public class CustomUsernamePasswordAuthenticationFilter
                res.put("access_token", token);
                response.getOutputStream().write(mapper.writeValueAsBytes(res));
                response.flushBuffer();
+               chain.doFilter(request,response);
 
 //        } catch (JWTCreationException exception){
             // Invalid Signing configuration / Couldn't convert Claims.
