@@ -10,4 +10,8 @@ public class MaverickHubApplication {
 		SpringApplication.run(MaverickHubApplication.class, args);
 	}
 
+	// anonymous method.
+    static {
+		System.out.println("Hello");
+	}
 }

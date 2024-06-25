@@ -1,5 +1,8 @@
 package com.mavericktube.MaverickHub.Security.filters;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTCreationException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mavericktube.MaverickHub.dtos.requests.LoginRequest;
 import jakarta.servlet.FilterChain;
@@ -12,12 +15,17 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.Collection;
+import java.util.Date;
 
 @Component
 @AllArgsConstructor
@@ -57,17 +65,22 @@ public class CustomUsernamePasswordAuthenticationFilter
                                             HttpServletResponse response,
                                             FilterChain chain,
                                             Authentication authResult) throws IOException, ServletException {
-
 //        try {
 //            Algorithm algorithm = Algorithm.RSA256(rsaPublicKey, rsaPrivateKey);
-//            String token = JWT.create()
-//                    .withIssuer("auth0")
-//                    .sign(algorithm);
+               String Token =  JWT.create()
+                    .withIssuer("mavericks_hub")
+                    .withArrayClaim("roles",getClaimsFrom(authResult.getAuthorities()))
+                    .withExpiresAt(new Date(LocalDate.now().plusDays(3).toEpochDay()))
+                    .sign(Algorithm.HMAC512("secret"));
+
 //        } catch (JWTCreationException exception){
-//            // Invalid Signing configuration / Couldn't convert Claims.
-//        }
+            // Invalid Signing configuration / Couldn't convert Claims.
+        }
 
-
+    private static String[] getClaimsFrom(Collection<? extends GrantedAuthority> authorities) {
+        return authorities.stream()
+                .map((grantedAuthority) -> grantedAuthority.getAuthority())
+                .toArray(String[]::new);
     }
 
     @Override
