@@ -2,7 +2,6 @@ package com.mavericktube.MaverickHub.Security.filters;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTCreationException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mavericktube.MaverickHub.dtos.requests.LoginRequest;
 import jakarta.servlet.FilterChain;
@@ -23,19 +22,14 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.*;
 
-import static com.cloudinary.AccessControlRule.AccessType.token;
-
-@Component
 @AllArgsConstructor
 public class CustomUsernamePasswordAuthenticationFilter
         extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
-    private ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper();
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request,
