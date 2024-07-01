@@ -28,7 +28,7 @@ public class MailServiceImpl implements  MailService{
         request.setSender(new Sender());
         request.setRecipient(List.of(new Recipient(mailRequest.getRecipientEmail(), mailRequest.getRecipientName())));
         request.setSubject(mailRequest.getSubject());
-        restTemplate.postForEntity(url,)
+        restTemplate.postForEntity(url,request,)
 
 
     }
