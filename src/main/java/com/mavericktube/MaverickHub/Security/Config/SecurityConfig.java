@@ -28,7 +28,7 @@ public class SecurityConfig {
             return http.csrf(c->c.disable())
                         .cors(c->c.disable())
                     .addFilterAt(authenticationFilter, BasicAuthenticationFilter.class)
-                    .authorizeHttpRequests(c->c.requestMatchers("/api/v1/auth", "/api/v1/media").permitAll()).build();
+                    .authorizeHttpRequests(c->c.requestMatchers("/api/v1/auth").permitAll().requestMatchers("/api/v1/media").hasAuthority("USER")).build();
     }
 
 }
