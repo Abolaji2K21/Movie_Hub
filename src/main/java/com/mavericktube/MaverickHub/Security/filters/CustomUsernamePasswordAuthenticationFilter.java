@@ -4,11 +4,14 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mavericktube.MaverickHub.dtos.requests.LoginRequest;
+import com.mavericktube.MaverickHub.dtos.responds.BaseResponse;
+import com.mavericktube.MaverickHub.dtos.responds.LoginResponse;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -89,6 +92,14 @@ public class CustomUsernamePasswordAuthenticationFilter
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
 
+        LoginResponse loginResponse = new LoginResponse();
+        loginResponse.setMessage(exception.getMessage());
+
+
+        BaseResponse<LoginResponse> baseResponse = new BaseResponse<>();
+        baseResponse.setData(loginResponse);
+        baseResponse.setStatus(false);
+        baseResponse.setCode(HttpStatus.UNAUTHORIZED.value());
 //        response.getOutputStream().write(mapper.writeValueAsBytes(res));
 //        response.flushBuffer();
 //        chain.doFilter(request,response);
