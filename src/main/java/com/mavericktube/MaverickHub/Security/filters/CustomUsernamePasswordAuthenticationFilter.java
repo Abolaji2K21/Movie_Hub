@@ -67,21 +67,16 @@ public class CustomUsernamePasswordAuthenticationFilter
                                             Authentication authResult) throws IOException, ServletException {
 //        try {
 //            Algorithm algorithm = Algorithm.RSA256(rsaPublicKey, rsaPrivateKey);
-               String token =  JWT.create()
-                    .withIssuer("mavericks_hub")
-                    .withArrayClaim("roles",getClaimsFrom(authResult.getAuthorities()))
-                    .withExpiresAt(Instant.now().plusSeconds(24 * 60 * 60))
-                    .sign(Algorithm.HMAC512("secret"));
 
         LoginResponse loginResponse = new LoginResponse();
         loginResponse.setMessage("Successful authentication");
-        loginResponse.setToken(token);
+        loginResponse.setToken(generateAccessToken(authResult));
 
 
 
         BaseResponse<LoginResponse> baseResponse = new BaseResponse<>();
         baseResponse.setData(loginResponse);
-        baseResponse.setStatus(false);
+        baseResponse.setStatus(true);
         baseResponse.setCode(HttpStatus.OK.value());
                response.getOutputStream().write(mapper.writeValueAsBytes(baseResponse));
                response.flushBuffer();
@@ -90,6 +85,15 @@ public class CustomUsernamePasswordAuthenticationFilter
 //        } catch (JWTCreationException exception){
             // Invalid Signing configuration / Couldn't convert Claims.
         }
+
+    private static String generateAccessToken(Authentication authResult) {
+        String token =  JWT.create()
+             .withIssuer("mavericks_hub")
+             .withArrayClaim("roles",getClaimsFrom(authResult.getAuthorities()))
+             .withExpiresAt(Instant.now().plusSeconds(24 * 60 * 60))
+             .sign(Algorithm.HMAC512("secret"));
+        return token;
+    }
 
     private static String[] getClaimsFrom(Collection<? extends GrantedAuthority> authorities) {
         return authorities.stream()
