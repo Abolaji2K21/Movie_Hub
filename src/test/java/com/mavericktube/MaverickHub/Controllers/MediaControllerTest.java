@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.mock.web.MockPart;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -33,6 +34,7 @@ import static utils.TestUtil.buildUploadRequest;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Sql(scripts ={"/db/data.sql"})
+@WithMockUser(authorities = {"USER"})
 class MediaControllerTest {
 
     @Autowired
@@ -74,6 +76,7 @@ class MediaControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andDo(print());
+
 
 
     }

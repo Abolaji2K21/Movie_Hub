@@ -1,6 +1,7 @@
 package com.mavericktube.MaverickHub.Security.Config;
 
 
+import com.mavericktube.MaverickHub.Security.filters.CustomAuthorizationFilter;
 import com.mavericktube.MaverickHub.Security.filters.CustomUsernamePasswordAuthenticationFilter;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,25 +11,32 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
+import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
+
 @Configuration
 @AllArgsConstructor
 public class SecurityConfig {
 
     private final AuthenticationManager authenticationManager;
+    private final CustomAuthorizationFilter customAuthorizationFilter;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         var authenticationFilter = new CustomUsernamePasswordAuthenticationFilter(authenticationManager);
         authenticationFilter.setFilterProcessesUrl("/api/v1/auth");
             return http.csrf(c->c.disable())
                         .cors(c->c.disable())
+                    .sessionManagement(c->c.sessionCreationPolicy(STATELESS))
                     .addFilterAt(authenticationFilter, BasicAuthenticationFilter.class)
-                    .authorizeHttpRequests(c->c.requestMatchers("/api/v1/auth").permitAll().requestMatchers("/api/v1/media").hasAuthority("USER")).build();
+                    .addFilterBefore(customAuthorizationFilter,CustomUsernamePasswordAuthenticationFilter.class)
+                    .authorizeHttpRequests(c->c.requestMatchers("/api/v1/auth").permitAll()
+                            .requestMatchers("/api/v1/media").hasAuthority("USER")).build();
     }
 
 }
