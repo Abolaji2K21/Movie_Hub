@@ -73,9 +73,17 @@ public class CustomUsernamePasswordAuthenticationFilter
                     .withExpiresAt(Instant.now().plusSeconds(24 * 60 * 60))
                     .sign(Algorithm.HMAC512("secret"));
 
-               Map<String, String> res = new HashMap<>();
-               res.put("access_token", token);
-               response.getOutputStream().write(mapper.writeValueAsBytes(res));
+        LoginResponse loginResponse = new LoginResponse();
+        loginResponse.setMessage("Successful authentication");
+        loginResponse.setToken(token);
+
+
+
+        BaseResponse<LoginResponse> baseResponse = new BaseResponse<>();
+        baseResponse.setData(loginResponse);
+        baseResponse.setStatus(false);
+        baseResponse.setCode(HttpStatus.OK.value());
+               response.getOutputStream().write(mapper.writeValueAsBytes(baseResponse));
                response.flushBuffer();
                chain.doFilter(request,response);
 
