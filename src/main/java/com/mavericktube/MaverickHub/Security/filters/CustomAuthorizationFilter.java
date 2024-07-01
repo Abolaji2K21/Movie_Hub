@@ -32,12 +32,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
         String requestPath = request.getServletPath();
         boolean isRequestPathPublic = PUBLIC_ENDPOINT.contains(requestPath);
         if(isRequestPathPublic) filterChain.doFilter(request,response);
-        request.getHeader("AUTHORIZATION");
-
-
-
-
-
+        String authorizationRequest = request.getHeader("AUTHORIZATION");
 
     }
 }
