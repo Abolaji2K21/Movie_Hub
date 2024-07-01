@@ -100,8 +100,7 @@ public class CustomUsernamePasswordAuthenticationFilter
         baseResponse.setData(loginResponse);
         baseResponse.setStatus(false);
         baseResponse.setCode(HttpStatus.UNAUTHORIZED.value());
-//        response.getOutputStream().write(mapper.writeValueAsBytes(res));
-//        response.flushBuffer();
-//        chain.doFilter(request,response);
+        response.getOutputStream().write(mapper.writeValueAsBytes(baseResponse));
+        response.flushBuffer();
     }
 }
