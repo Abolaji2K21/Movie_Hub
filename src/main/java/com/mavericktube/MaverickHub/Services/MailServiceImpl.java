@@ -6,11 +6,16 @@ import com.mavericktube.MaverickHub.dtos.requests.BrevoMailRequest;
 import com.mavericktube.MaverickHub.dtos.requests.Recipient;
 import com.mavericktube.MaverickHub.dtos.requests.SendMailRequest;
 import com.mavericktube.MaverickHub.dtos.requests.Sender;
+import com.mavericktube.MaverickHub.dtos.responds.BrevoMailResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.URI;
 import java.util.List;
+
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @Service
 @AllArgsConstructor
@@ -28,8 +33,16 @@ public class MailServiceImpl implements  MailService{
         request.setSender(new Sender());
         request.setRecipient(List.of(new Recipient(mailRequest.getRecipientEmail(), mailRequest.getRecipientName())));
         request.setSubject(mailRequest.getSubject());
-        restTemplate.postForEntity(url,request,)
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(APPLICATION_JSON);
+        headers.set("api-key", mailConfig.getMailApiKey());
+        headers.set("accept",APPLICATION_JSON.toString());
+        RequestEntity<?> httpRequest = new RequestEntity<>(request,headers,HttpMethod.POST, URI.create(url));
+        ResponseEntity<BrevoMailResponse> response =restTemplate.postForEntity(url,httpRequest, BrevoMailResponse.class);
 
-
+        if (response.getBody()!= null && response.getStatusCode() == HttpStatusCode.valueOf(201)) {
+            return "mail sent successfully";
+        }
+        else throw new RuntimeException("Email sending Failed");
     }
 }

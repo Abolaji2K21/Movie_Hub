@@ -10,6 +10,6 @@ public class MailConfig {
     @Value("${mail.api.key}")
     private String mailApiKey;
 
-    @Value("${mail.api.url")
+    @Value("${mail.api.url}")
     private String mailApiUrl;
 }
