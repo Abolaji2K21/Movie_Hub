@@ -1,8 +1,9 @@
 package com.mavericktube.MaverickHub.Services;
 
 
+import com.mavericktube.MaverickHub.dtos.requests.SendMailRequest;
 
 public interface MailService {
 
-    String sendMail(String email);
+    String sendMail(SendMailRequest mailRequest);
 }

@@ -1,6 +1,7 @@
 package com.mavericktube.MaverickHub.Services;
 
 
+import com.mavericktube.MaverickHub.dtos.requests.SendMailRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,8 +19,12 @@ public class MailServiceTest {
     void testSendEmail(){
         String Email = "abisoyeabolaji2k21@gmail.com";
 
-
-        String response = mailService.sendMail(Email);
+        SendMailRequest mailRequest = new SendMailRequest();
+        mailRequest.setContent("<p> Hello from the other side Of the hub</p>");
+        mailRequest.setRecipientEmail(Email);
+        mailRequest.setSubject("Welcome to the Hub");
+        mailRequest.setRecipientName("John");
+        String response = mailService.sendMail(mailRequest);
 
         assertThat(response).isNotNull();
         assertThat(response).containsIgnoringCase("success");
