@@ -1,15 +1,24 @@
 package com.mavericktube.MaverickHub.Security.filters;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.http.HttpHeaders;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 
 import static com.mavericktube.MaverickHub.Security.utils.SecurityUtils.JWT_PREFIX;
 import static com.mavericktube.MaverickHub.Security.utils.SecurityUtils.PUBLIC_ENDPOINT;
@@ -36,5 +45,20 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
         if(isRequestPathPublic) filterChain.doFilter(request,response);
         String authorizationRequest = request.getHeader(HttpHeaders.AUTHORIZATION);
         String token = authorizationRequest.substring(JWT_PREFIX.length()).strip();
+        JWTVerifier verifier = JWT.require(Algorithm.HMAC512("Secret".getBytes()))
+                .withIssuer("mavericks_hub")
+                .withClaimPresence("roles")
+                .build();
+        DecodedJWT decodedJWT =verifier.verify(token);
+
+       List<SimpleGrantedAuthority> authorities = decodedJWT.getClaim("roles").asList(SimpleGrantedAuthority.class);
+
+        Authentication authentication =
+                new UsernamePasswordAuthenticationToken(null, null, authorities);
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        filterChain.doFilter(request,response);
+
+
     }
 }
