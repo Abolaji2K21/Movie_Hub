@@ -1,5 +1,6 @@
 package com.mavericktube.MaverickHub.Services;
 
+import com.mavericktube.MaverickHub.Models.Authority;
 import com.mavericktube.MaverickHub.Models.User;
 import com.mavericktube.MaverickHub.Repositories.UserRepository;
 import com.mavericktube.MaverickHub.dtos.requests.CreateUserRequest;
@@ -14,6 +15,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.Optional;
 
 
@@ -37,6 +39,9 @@ public class UserServiceImpl implements UserService{
     public CreateUserResponse register(CreateUserRequest request) {
         User user = modelMapper.map(request, User.class);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setAuthorities(new HashSet<>());
+        var authorities   =user.getAuthorities();
+        authorities.add(Authority.USER);
         user = userRepository.save(user);
         var response = modelMapper.map(user, CreateUserResponse.class);
         response.setMessage("user registered successfully");
