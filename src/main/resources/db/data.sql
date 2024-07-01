@@ -3,11 +3,11 @@ truncate table media cascade;
 
 
 insert into users(id, email,password, time_created)values
-(200, 'john@email.com','password', '2024-06-04T15:03:03.792009700'),
-(201, 'jor@email.com','password', '2024-06-04T15:03:03.792009700'),
-(202, 'jon@email.com','password', '2024-06-04T15:03:03.792009700'),
-(203, 'ohn@email.com','password', '2024-06-04T15:03:03.792009700'),
-(204, 'peter@email.com','password','2024-06-04T15:03:03.792009700');
+(200, 'john@email.com','$2a$10$o1mApuoFN76VGiUxcHJJYeaaR2O70GDg2rXp3SWWPe4NXRojyJbRu', '2024-06-04T15:03:03.792009700'),
+(201, 'jor@email.com','$2a$10$o1mApuoFN76VGiUxcHJJYeaaR2O70GDg2rXp3SWWPe4NXRojyJbRu', '2024-06-04T15:03:03.792009700'),
+(202, 'jon@email.com','$2a$10$o1mApuoFN76VGiUxcHJJYeaaR2O70GDg2rXp3SWWPe4NXRojyJbRu', '2024-06-04T15:03:03.792009700'),
+(203, 'ohn@email.com','$2a$10$o1mApuoFN76VGiUxcHJJYeaaR2O70GDg2rXp3SWWPe4NXRojyJbRu', '2024-06-04T15:03:03.792009700'),
+(204, 'peter@email.com','$2a$10$o1mApuoFN76VGiUxcHJJYeaaR2O70GDg2rXp3SWWPe4NXRojyJbRu','2024-06-04T15:03:03.792009700');
 
 
 -- insert into playlist(media[], )
