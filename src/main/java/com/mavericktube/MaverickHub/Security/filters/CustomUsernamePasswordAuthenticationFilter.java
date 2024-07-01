@@ -112,6 +112,8 @@ public class CustomUsernamePasswordAuthenticationFilter
         baseResponse.setStatus(false);
         baseResponse.setCode(HttpStatus.UNAUTHORIZED.value());
         response.getOutputStream().write(mapper.writeValueAsBytes(baseResponse));
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+//        response.sendError(HttpStatus.UNAUTHORIZED.value());
         response.flushBuffer();
     }
 }
