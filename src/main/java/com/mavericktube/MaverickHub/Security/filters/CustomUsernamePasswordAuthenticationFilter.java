@@ -87,7 +87,8 @@ public class CustomUsernamePasswordAuthenticationFilter
     }
 
     @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+
 //        response.getOutputStream().write(mapper.writeValueAsBytes(res));
 //        response.flushBuffer();
 //        chain.doFilter(request,response);
